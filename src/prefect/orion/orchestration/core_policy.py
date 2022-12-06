@@ -157,11 +157,12 @@ class SecureTaskConcurrencySlots(BaseOrchestrationRule):
 
 class ReleaseTaskConcurrencySlots(BaseOrchestrationRule):
     """
-    Releases any concurrency slots held by a run upon exiting a Running state.
+    Releases any concurrency slots held by a run upon exiting a Running or
+    Cancelling state.
     """
 
-    FROM_STATES = [states.StateType.RUNNING]
-    TO_STATES = ALL_ORCHESTRATION_STATES
+    FROM_STATES = [states.StateType.RUNNING, states.StateType.CANCELLING]
+    TO_STATES = ALL_ORCHESTRATION_STATES - {states.StateType.CANCELLING}
 
     async def after_transition(
         self,
