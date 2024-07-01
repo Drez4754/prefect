@@ -1,5 +1,85 @@
 # Prefect Release Notes
 
+## Release preview
+
+### Exciting New Features 🎉
+- Add events to the flow run graph — https://github.com/PrefectHQ/prefect/pull/13875
+- Add support for decorating instance/class/static methods with `@task` and `@flow` — https://github.com/PrefectHQ/prefect/pull/13944
+
+### Enhancements
+- Update flow runs on Runs page to use pagination rather than infinite scrolling — https://github.com/PrefectHQ/prefect/pull/13839
+- Raise helpful error when `task_worker` runs against ephemeral server — https://github.com/PrefectHQ/prefect/pull/13848
+- Add new flows pagination endpoint — https://github.com/PrefectHQ/prefect/pull/13846
+- Add better task retry logging — https://github.com/PrefectHQ/prefect/pull/13870
+- Expose arg for max workers on `ThreadPoolTaskRunner` — https://github.com/PrefectHQ/prefect/pull/13866
+- Remove dynamic key from non-flow task run name — https://github.com/PrefectHQ/prefect/pull/13902
+- Add `not_any_` filters to flow run state name/type — https://github.com/PrefectHQ/prefect/pull/13920
+- Surface failed action `error_detail` for validation errors — https://github.com/PrefectHQ/prefect/pull/13940
+- Add default store for transactions — https://github.com/PrefectHQ/prefect/pull/13983
+- Prevent duplicate run creation from double button presses — https://github.com/PrefectHQ/prefect/pull/13986
+- Add support for composite triggers — https://github.com/PrefectHQ/prefect/pull/13975
+- Add transaction record expirations — https://github.com/PrefectHQ/prefect/pull/14035
+- Add a `url_for` utility for generating URLs for Prefect objects — https://github.com/PrefectHQ/prefect/pull/13885
+- Add synchronous client method for creating artifacts — https://github.com/PrefectHQ/prefect/pull/13931
+- Add message for submitted tasks that are not waited — https://github.com/PrefectHQ/prefect/pull/13845
+
+### Fixes
+- Add `shield` when re-enqueuing task runs — https://github.com/PrefectHQ/prefect/pull/13883
+- Remove the limit and page from the history request — https://github.com/PrefectHQ/prefect/pull/13901
+- Add circuit breaker when a task depends on itself — https://github.com/PrefectHQ/prefect/pull/13882
+- Fix flow run retries for deployment flow runs — https://github.com/PrefectHQ/prefect/pull/13884
+- Fix `ThreadPoolTaskRunner` concurrency by copying `max_workers` on duplication — https://github.com/PrefectHQ/prefect/pull/13943
+- Fix `prefect deploy` with dynamic @flow decorator args — https://github.com/PrefectHQ/prefect/pull/13967
+- Fix bug crashing task runs with remote storage — https://github.com/PrefectHQ/prefect/pull/13990
+- Fix variables schema dump for work pool base job templates — https://github.com/PrefectHQ/prefect/pull/13971
+- Prevent execution of code in `if __name__ == "__main__":` blocks when running `prefect deploy` — https://github.com/PrefectHQ/prefect/pull/13922
+- Fix typing on `GlobalConcurrencyLimitUpdate` — https://github.com/PrefectHQ/prefect/pull/14005
+- Bump `TaskRunWaiter` cache size and expiration time and pin task worker thread pool workers to passed `limit` — https://github.com/PrefectHQ/prefect/pull/14030
+- Fix Kubernetes guide to avoid suggesting you need cloud — https://github.com/PrefectHQ/prefect/pull/14040
+- Require a `PREFECT_API_URL` to start a worker — https://github.com/PrefectHQ/prefect/pull/13942
+- Remove `LiteralResult` and handle singleton values the same — https://github.com/PrefectHQ/prefect/pull/13905
+- Resolve an infinite loop distributing events to a websocket subscriber — https://github.com/PrefectHQ/prefect/pull/13877
+
+### Documentation
+- Remove gerunds and redundant prefixes from CLI command help text — https://github.com/PrefectHQ/prefect/pull/13788
+- Remove script tag — https://github.com/PrefectHQ/prefect/pull/13852
+- Quickstart 3.0rc polish — https://github.com/PrefectHQ/prefect/pull/13879
+- Update `pydantic` syntax in docs — https://github.com/PrefectHQ/prefect/pull/13888
+- Improves integrations docs formatting  — https://github.com/PrefectHQ/prefect/pull/13934
+- Simplifies integration docs  — https://github.com/PrefectHQ/prefect/pull/13926
+- Fix code block formatting in automations concepts docs — https://github.com/PrefectHQ/prefect/pull/13959
+- Add react docs — https://github.com/PrefectHQ/prefect/pull/13965
+- Update Quickstart install instructions for 3.0 — https://github.com/PrefectHQ/prefect/pull/13988
+- Fix docs formatting in integrations page — https://github.com/PrefectHQ/prefect/pull/13999
+- Removed references to SequentialTaskRunner — https://github.com/PrefectHQ/prefect/pull/13996
+- Removes extraneous docs files — https://github.com/PrefectHQ/prefect/pull/14016
+- Remove extra arrow in top button — https://github.com/PrefectHQ/prefect/pull/14052
+- Adds cards showing all integration libraries to the integrations page — https://github.com/PrefectHQ/prefect/pull/14051
+- Update contribute section of the docs — https://github.com/PrefectHQ/prefect/pull/14055
+- Add documentation about supported function types — https://github.com/PrefectHQ/prefect/pull/14060
+
+### Breaking Changes
+- Remove unused attributes from `EngineContext` — https://github.com/PrefectHQ/prefect/pull/13917
+
+### Integrations
+
+#### prefect-dbt
+
+- Add back logging of dbt commands — https://github.com/PrefectHQ/prefect/pull/13853
+
+#### prefect-databricks
+
+- Support job parameters for Databricks jobs — https://github.com/PrefectHQ/prefect/pull/13642
+- Restore `jobs_runs_submit_by_id_and_wait_for_completion` — https://github.com/PrefectHQ/prefect/pull/13958
+
+## Contributors
+- @LarryUllman
+- @Waiwait
+- @padbk
+- @stellardave
+
+**All changes**: https://github.com/PrefectHQ/prefect/compare/3.0.0rc2...3.0.0rc3
+
 ## Release 3.0.0rc1
 
 We're excited to announce the release candidate of Prefect 3.0. It's the most flexible, powerful, fastest version of Prefect yet. Prefect 3.0 includes several exciting new features. Install it by running `pip install prefect==3.0.0rc1` and check out the docs [here](https://docs-3.prefect.io/3.0rc/getting-started/index).
@@ -796,7 +876,7 @@ See the PR for implementation details: https://github.com/PrefectHQ/prefect/pull
 - Pin uvicorn to < 0.29 — https://github.com/PrefectHQ/prefect/pull/12463
 
 ### Experimental
-- More robust error handling in `TaskServer` — https://github.com/PrefectHQ/prefect/pull/12382
+- More robust error handling in `TaskWorker` — https://github.com/PrefectHQ/prefect/pull/12382
 - Add `model_validate_json` to Pydantic compat layer — https://github.com/PrefectHQ/prefect/pull/12412
 - Add `model_dump_json` to Pydantic compat layer — https://github.com/PrefectHQ/prefect/pull/12406
 - Add hybrid `BaseModel` and public `pydantic` module — https://github.com/PrefectHQ/prefect/pull/12424

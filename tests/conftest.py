@@ -55,9 +55,7 @@ from prefect.settings import (
     PREFECT_CLI_COLORS,
     PREFECT_CLI_WRAP_LINES,
     PREFECT_EXPERIMENTAL_ENABLE_ENHANCED_CANCELLATION,
-    PREFECT_EXPERIMENTAL_ENABLE_WORKERS,
     PREFECT_EXPERIMENTAL_WARN_ENHANCED_CANCELLATION,
-    PREFECT_EXPERIMENTAL_WARN_WORKERS,
     PREFECT_HOME,
     PREFECT_LOCAL_STORAGE_PATH,
     PREFECT_LOGGING_INTERNAL_LEVEL,
@@ -359,12 +357,15 @@ def pytest_sessionstart(session):
     setup_logging()
 
 
-@pytest.hookimpl(hookwrapper=True)
-def pytest_sessionfinish(session):
-    # Allow all other finish fixture to complete first
+# def pytest_sessionfinish(session, exitstatus):
+@pytest.fixture(scope="session", autouse=True)
+def cleanup(drain_log_workers, drain_events_workers):
+    # this fixture depends on other fixtures with important cleanup steps like
+    # draining workers to ensure that the home directory is not deleted before
+    # these steps are completed
     yield
 
-    # Then, delete the temporary directory
+    # delete the temporary directory
     if TEST_PREFECT_HOME is not None:
         shutil.rmtree(TEST_PREFECT_HOME)
 
@@ -480,17 +481,6 @@ def test_database_connection_url(generate_test_database_connection_url):
 
 
 @pytest.fixture(autouse=True)
-def reset_object_registry():
-    """
-    Ensures each test has a clean object registry.
-    """
-    from prefect.context import PrefectObjectRegistry
-
-    with PrefectObjectRegistry():
-        yield
-
-
-@pytest.fixture(autouse=True)
 def reset_registered_blocks():
     """
     Ensures each test only has types that were registered at module initialization.
@@ -524,22 +514,6 @@ def caplog(caplog):
 @pytest.fixture(autouse=True)
 def disable_csrf_protection():
     with temporary_settings({PREFECT_SERVER_CSRF_PROTECTION_ENABLED: False}):
-        yield
-
-
-@pytest.fixture
-def enable_workers():
-    with temporary_settings(
-        {PREFECT_EXPERIMENTAL_ENABLE_WORKERS: 1, PREFECT_EXPERIMENTAL_WARN_WORKERS: 0}
-    ):
-        yield
-
-
-@pytest.fixture
-def disable_workers():
-    with temporary_settings(
-        {PREFECT_EXPERIMENTAL_ENABLE_WORKERS: 0, PREFECT_EXPERIMENTAL_WARN_WORKERS: 1}
-    ):
         yield
 
 
@@ -604,6 +578,15 @@ def leaves_no_extraneous_files():
     yield
     after = set(Path(".").iterdir())
     new_files = after - before
+
+    ignored_file_prefixes = {".coverage"}
+
+    new_files = {
+        f
+        for f in new_files
+        if not any(f.name.startswith(prefix) for prefix in ignored_file_prefixes)
+    }
+
     if new_files:
         raise AssertionError(
             "One of the tests in this module left new files in the "
